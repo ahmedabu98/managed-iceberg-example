@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url = uri("https://packages.confluent.io/maven/")
+    }
+    maven {
+        url = uri('https://repository.apache.org/content/repositories/snapshots/')
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java // If your project is a Java library/application
+            // Optional: Customize POM elements here (artifactId, dependencies, etc.)
+            pom {
+                name = 'Managed Iceberg Example'
+            }
+        }
+    }
+}
+
+dependencies {
+    // use snapshot to include recent bug fix
+    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.57.0-SNAPSHOT"
+    // manually choose java core snapshot too to include another change
+    runtimeOnly  "org.apache.beam:beam-sdks-java-core:2.57.0-SNAPSHOT"
+    // this one isn't necessary but has some UX improvements for Managed api
+    runtimeOnly  "org.apache.beam:beam-sdks-java-managed:2.57.0-SNAPSHOT"
+
+    // needed to run icebergIO
+    runtimeOnly "org.yaml:snakeyaml:2.0"
+    runtimeOnly "com.google.cloud.bigdataoss:gcsio:2.2.16"
+    runtimeOnly "com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16"
+    runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
+
+    // to run the pipeline with direct runner
+    runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.56.0'
+}
