@@ -45,3 +45,10 @@ dependencies {
     // to run the pipeline with direct runner
     runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.56.0'
 }
+
+tasks.create(name:"execute", type:JavaExec) {
+    main = project.hasProperty("mainClass") ? project.getProperty("mainClass") : "NONE"
+    classpath = sourceSets.main.runtimeClasspath
+    systemProperties System.getProperties()
+    args project.hasProperty("exec.args") ? project.getProperty("exec.args").split() : []
+}

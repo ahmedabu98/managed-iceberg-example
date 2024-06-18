@@ -3,20 +3,26 @@ package org.example;
 import com.google.common.collect.ImmutableMap;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.managed.Managed;
+import org.apache.beam.sdk.options.PipelineOptions;
+import org.apache.beam.sdk.options.PipelineOptionsFactory;
+import org.apache.beam.sdk.options.Default;
+import org.apache.beam.sdk.options.Description;
+import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.values.TypeDescriptors;
 
 public class ReadExample {
     public static void main(String[] args) {
-        Pipeline pipeline = Pipeline.create();
+        IcebergReadOptions options = PipelineOptionsFactory.fromArgs(args).as(IcebergReadOptions.class);
+        Pipeline pipeline = Pipeline.create(options);
 
         pipeline.apply(
                 Managed.read(Managed.ICEBERG).withConfig(ImmutableMap.<String, Object>builder()
-                        .put("table", "testRead.table2ac46fb5")
+                        .put("table", options.getTable())
                         .put("catalog_config", ImmutableMap.<String, Object>builder()
-                                .put("catalog_name", "name")
-                                .put("catalog_type", "hadoop")
-                                .put("warehouse_location", "gs://temp-storage-for-end-to-end-tests/IcebergIOIT/testRead/0cc304b3-f27b-417b-b16a-29868880442b")
+                                .put("catalog_name", options.getCatalogName())
+                                .put("catalog_type", options.getCatalogType())
+                                .put("warehouse_location", options.getWarehouseLocation())
                                 .build())
                         .build()))
                 .getSinglePCollection()
@@ -27,5 +33,29 @@ public class ReadExample {
                 }));
 
         pipeline.run();
+    }
+
+    public interface IcebergReadOptions extends PipelineOptions {
+        @Validation.Required
+        String getWarehouseLocation();
+
+        void setWarehouseLocation(String warehouseLocation);
+
+        @Description("Iceberg table identifier, including namespace.")
+        @Validation.Required
+        String getTable();
+
+        void setTable(String table);
+
+        @Default.String("ReadExample")
+        String getCatalogName();
+
+        void setCatalogName(String catalogName);
+
+        @Description("Catalog type. Valid types are: {hadoop, hive, rest}")
+        @Default.String("hadoop")
+        String getCatalogType();
+
+        void setCatalogType(String catalogType);
     }
 }
