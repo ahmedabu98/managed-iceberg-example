@@ -5,8 +5,10 @@ This is a simple example reading from an **existing** Iceberg GCS table using Ap
 
 Dependencies can be found in [`build.gradle`](https://github.com/ahmedabu98/managed-iceberg-example/blob/master/build.gradle). This file was used to also generate a [`pom.xml`](https://github.com/ahmedabu98/managed-iceberg-example/blob/master/pom.xml).
 
-Run with the following gradle command
+Run examples with the following gradle commands
 ```bash
+./gradlew execute -PmainClass=org.example.WriteExample -Pexec.args="--table=$TABLE --warehouseLocation=$WAREHOUSE_LOCATION --createTable=true --gcpProject=$PROJECT"
+
 ./gradlew execute -PmainClass=org.example.ReadExample -Pexec.args="--table=$TABLE --warehouseLocation=$WAREHOUSE_LOCATION"
 ```
 
