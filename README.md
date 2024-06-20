@@ -1,4 +1,5 @@
 Managed Iceberg Example
+-----------------------
 
 This is a simple example reading from an **existing** Iceberg GCS table using Apache Beam's Managed IcebergIO.
 
@@ -8,3 +9,7 @@ Run with the following gradle command
 ```bash
 ./gradlew execute -PmainClass=org.example.ReadExample -Pexec.args="--table=$TABLE --warehouseLocation=$WAREHOUSE_LOCATION"
 ```
+
+**Note**: The Hadoop catalog is included by default and works out of the box with this example. However, it's primarily
+for testing and may not be suitable for production. For production, consider other catalogs that offer more features and
+scalability, but you'll need to install their respective JAR files
