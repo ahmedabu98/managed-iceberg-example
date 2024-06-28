@@ -29,12 +29,9 @@ publishing {
 }
 
 dependencies {
-    // use snapshot to include recent bug fix
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.57.0-SNAPSHOT"
-    // manually choose java core snapshot too to include another change
-    runtimeOnly  "org.apache.beam:beam-sdks-java-core:2.57.0-SNAPSHOT"
-    // this one isn't necessary but has some UX improvements for Managed api
-    runtimeOnly  "org.apache.beam:beam-sdks-java-managed:2.57.0-SNAPSHOT"
+    // Beam Iceberg connector
+    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.57.0"
+    runtimeOnly  "org.apache.beam:beam-sdks-java-core:2.57.0"
 
     // needed to run icebergIO
     runtimeOnly "org.yaml:snakeyaml:2.0"
