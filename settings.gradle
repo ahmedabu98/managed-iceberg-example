@@ -1,2 +1,5 @@
 rootProject.name = 'managed-iceberg-example'
+include 'biglake'
+include 'hadoop'
+include 'utils'
 
