@@ -12,6 +12,11 @@ build/
 **/*.iws
 **/out/**/*
 
+### Terraform ###
+**/*/.terraform*
+**/*.tfstate
+**/*.tfstate.*
+
 ### Eclipse ###
 .apt_generated
 .classpath

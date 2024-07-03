@@ -9,12 +9,21 @@ import org.apache.beam.sdk.schemas.Schema;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.apache.beam.sdk.values.Row;
+import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.iceberg.catalog.TableIdentifier;
+import org.apache.iceberg.hadoop.HadoopCatalog;
+import org.apache.iceberg.types.Types;
 import org.example.utils.IcebergPipelineOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 
 public class WriteToIcebergBigLake {
+    private static final Logger LOG = LoggerFactory.getLogger(WriteToIcebergBigLake.class);
+
     // change `SCHEMA` and `ROW_FUNC` to fit the existing Iceberg BigLake table's schema
     static Schema SCHEMA = Schema.builder()
             .addStringField("str")
@@ -34,7 +43,9 @@ public class WriteToIcebergBigLake {
         IcebergPipelineOptions options = PipelineOptionsFactory.fromArgs(args).as(IcebergPipelineOptions.class);
 
         if (options.getCreateTable()) {
-            throw new UnsupportedOperationException("BigLakeCatalog doesn't support creating tables.");
+            LOG.info("BigLakeCatalog doesn't support creating tables. Will instead attempt to create a table " +
+                    "using HadoopCatalog.");
+            createTable(options);
         }
 
         Map<String, String> properties = ImmutableMap.<String, String>builder()
@@ -58,5 +69,29 @@ public class WriteToIcebergBigLake {
                         .build()));
 
         pipeline.run();
+    }
+
+    public static void createTable(IcebergPipelineOptions options) {
+        Configuration catalogConf = new Configuration();
+        catalogConf.set("fs.gs.project.id", Preconditions.checkNotNull(options.getProject(),
+                "To create the table, please provide your GCP project using --project"));
+        catalogConf.set(
+                "fs.gs.auth.service.account.json.keyfile", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        Map<String, String> properties = ImmutableMap.<String, String>builder()
+                .put("warehouse", options.getWarehouse())
+                .build();
+
+        HadoopCatalog catalog;
+        catalog = new HadoopCatalog();
+        catalog.setConf(catalogConf);
+        catalog.initialize(options.getCatalogName(), properties);
+
+        TableIdentifier table = TableIdentifier.parse(options.getTable());
+
+        catalog.createTable(table,
+                new org.apache.iceberg.Schema(
+                        Types.NestedField.required(1, "str", Types.StringType.get()),
+                        Types.NestedField.required(2, "number", Types.LongType.get())));
+        LOG.info("Successfully created table {}", table);
     }
 }
