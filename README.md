@@ -22,6 +22,9 @@ files. To run these examples, fork this repository and follow the instructions b
 ./gradlew hadoop:execute -PmainClass=org.example.hadoop.ReadExample \
     -Pexec.args="--catalogName=$CATALOG_NAME --table=$TABLE --warehouse=$WAREHOUSE"
 ```
+**Note**: HadoopCatalog is included by default and works out of the box with this example. However, it's primarily
+for testing and may not be suitable for production. Consider other catalogs that offer more features and potential for
+scalability, but you'll need to install their respective JAR files
 
 ## Run BigLake examples with the following gradle commands
 
@@ -38,8 +41,5 @@ files. To run these examples, fork this repository and follow the instructions b
     --warehouse=$WAREHOUSE --project=$PROJECT --region=$REGION"
 
 ```
-
-
-**Note**: The Hadoop catalog is included by default and works out of the box with this example. However, it's primarily
-for testing and may not be suitable for production. For production, consider other catalogs that offer more features and
-scalability, but you'll need to install their respective JAR files
+**Note**: BigLakeCatalog is a custom catalog provided by Google. The jar is included here for convenience, but it can be
+downloaded using the [these instructions](https://cloud.google.com/bigquery/docs/iceberg-tables#before_you_begin).
