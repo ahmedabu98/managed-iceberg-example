@@ -7,7 +7,6 @@ group = 'org.example.biglake'
 version = '1.0-SNAPSHOT'
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {
         url = uri("https://packages.confluent.io/maven/")
@@ -21,6 +20,12 @@ dependencies {
     // Apache Beam's IcebergIO
     implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.58.0-SNAPSHOT"
     implementation project(":utils")
+
+    // runtime dependencies when writing to GCS
+    runtimeOnly "org.yaml:snakeyaml:2.0"
+    runtimeOnly "com.google.cloud.bigdataoss:gcsio:2.2.16"
+    runtimeOnly "com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16"
+    runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
 
     // jar containing BigLakeCatalog, downloaded from gs://spark-lib/biglake/biglake-catalog-iceberg1.5.0-0.1.1-with-dependencies.jar
     implementation files("biglakecatalog/biglake-catalog-iceberg1.5.0-0.1.1-with-dependencies.jar")
