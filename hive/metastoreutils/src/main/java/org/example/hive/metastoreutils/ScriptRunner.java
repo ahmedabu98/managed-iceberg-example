@@ -1,4 +1,4 @@
-package org.example.hive.metastore;
+package org.example.hive.metastoreutils;
 
 import java.io.IOException;
 import java.io.LineNumberReader;

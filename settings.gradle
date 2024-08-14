@@ -4,3 +4,8 @@ include 'hadoop'
 include 'utils'
 include 'bigquery'
 include 'hive:exec'
+include 'hive:metastoreutils'
+findProject(':hive:metastoreutils')?.name = 'metastoreutils'
+include 'hive:metastore'
+findProject(':hive:metastore')?.name = 'metastore'
+

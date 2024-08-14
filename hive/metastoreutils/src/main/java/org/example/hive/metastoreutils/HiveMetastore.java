@@ -1,8 +1,9 @@
-package org.example.hive.metastore;
+package org.example.hive.metastoreutils;
 
 import static java.nio.file.Files.createTempDirectory;
 import static java.nio.file.attribute.PosixFilePermissions.asFileAttribute;
 import static java.nio.file.attribute.PosixFilePermissions.fromString;
+import static org.example.utils.Values.ICEBERG_SCHEMA;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,33 +14,40 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Strings;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
+import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
+import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.hadoop.hive.metastore.HiveMetaStore;
 import org.apache.hadoop.hive.metastore.HiveMetaStoreClient;
 import org.apache.hadoop.hive.metastore.IHMSHandler;
 import org.apache.hadoop.hive.metastore.RetryingHMSHandler;
 import org.apache.hadoop.hive.metastore.TSetIpAddressProcessor;
+import org.apache.iceberg.CatalogProperties;
+import org.apache.iceberg.CatalogUtil;
+import org.apache.iceberg.Table;
+import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.common.DynConstructors;
 import org.apache.iceberg.common.DynMethods;
 import org.apache.iceberg.hadoop.Util;
+import org.apache.iceberg.hive.HiveCatalog;
 import org.apache.iceberg.hive.HiveClientPool;
+import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TTransportFactory;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class HiveMetastore {
     private HiveMetaStoreClient metastoreClient;
@@ -118,16 +126,16 @@ public class HiveMetastore {
     public String hiveMetastoreUri;
     public final boolean createMetastore;
 
-    public HiveMetastore(String hiveWarehousePath, @Nullable String hiveMetastoreUri) throws MetaException {
+    public HiveMetastore(String hiveWarehousePath, String hiveMetastoreUri) throws Exception {
         this.hiveWarehousePath = hiveWarehousePath;
         this.hiveMetastoreUri = hiveMetastoreUri;
-        this.createMetastore = Strings.isNullOrEmpty(hiveMetastoreUri);
+        this.createMetastore = hiveMetastoreUri == null || hiveMetastoreUri.isEmpty();
         HiveConf hiveConf = new HiveConf(HiveMetastore.class);
         start(hiveConf, DEFAULT_POOL_SIZE);
 
         this.metastoreClient = new HiveMetaStoreClient(hiveConf);
         if (createMetastore) {
-            System.out.printf("Successfully created a hive metastore at: '%s'\n", hiveMetastoreUri);
+            System.out.printf("Successfully created a hive metastore at: '%s'\n", this.hiveMetastoreUri);
         }
     }
 
@@ -142,7 +150,7 @@ public class HiveMetastore {
         try {
             TServerSocket socket = new TServerSocket(0);
             int port = socket.getServerSocket().getLocalPort();
-            if (Strings.isNullOrEmpty(this.hiveMetastoreUri)) {
+            if (createMetastore) {
                 hiveMetastoreUri = "thrift://localhost:" + port;
                 System.out.printf("Received null metastore URI. Creating new Hive metastore at %s ...\n", hiveMetastoreUri);
             }
@@ -272,5 +280,40 @@ public class HiveMetastore {
         try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
             scriptRunner.runScript(reader);
         }
+    }
+
+    public void createTable(String catalogName, String tableId) throws Exception {
+        TableIdentifier tableIdentifier = TableIdentifier.parse(tableId);
+
+        String[] levels = tableIdentifier.namespace().levels();
+        if (levels.length != 1) {
+            throw new IllegalStateException("Error when retrieving the table identifier's database. " +
+                    "Expected 1 namespace level but found " + levels.length);
+        }
+        String database = levels[0];
+        String dbPath = getDatabasePath(levels[0]);
+        Database db = new Database(database, "Managed Iceberg example", dbPath, new HashMap<>());
+        try {
+            System.out.println("xxxx creating the database");
+            metastoreClient.createDatabase(db);
+            System.out.printf("Successfully created database: '%s', path: %s%n", database, dbPath);
+        } catch (AlreadyExistsException e) {
+            System.out.printf("Database '%s' already exists. Ignoring exception: %s\n", database, e);
+        }
+
+        HiveCatalog catalog = initializeCatalog(catalogName);
+
+        Table table = catalog.createTable(tableIdentifier, ICEBERG_SCHEMA);
+        System.out.printf("Successfully created table '%s', path: %s\n", table.name(), table.location());
+    }
+
+    private HiveCatalog initializeCatalog(String catalogName) {
+        Map<String, String> props = new HashMap<>();
+        props.put(CatalogProperties.CLIENT_POOL_CACHE_EVICTION_INTERVAL_MS,
+                String.valueOf(TimeUnit.SECONDS.toMillis(10)));
+        return (HiveCatalog) CatalogUtil.loadCatalog(HiveCatalog.class.getName(),
+                catalogName,
+                props,
+                hiveConf);
     }
 }

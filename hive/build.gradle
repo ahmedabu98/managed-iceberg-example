@@ -27,17 +27,15 @@ dependencies {
 
     // runtime dependencies when writing to GCS
     runtimeOnly "org.yaml:snakeyaml:2.0"
-    runtimeOnly ("com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16")
+    runtimeOnly "com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16"
     runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
 
-    // hive dependencies to create a metastore (if needed)
-    implementation "org.apache.iceberg:iceberg-common:$iceberg_version"
-    implementation ("org.apache.iceberg:iceberg-hive-metastore:$iceberg_version")
-    runtimeOnly ("org.apache.hive.hcatalog:hive-hcatalog-core:$hive_version") {
-        exclude group: "org.apache.hive", module: "hive-exec"
-        exclude group: "org.apache.parquet", module: "parquet-hadoop-bundle"
-    }
-    implementation project(path: ":hive:exec", configuration: "shadow")
+    // hive runtime dependencies
+    runtimeOnly project(path: ":hive:exec", configuration: "shadow")
+    runtimeOnly "org.apache.iceberg:iceberg-hive-metastore:$iceberg_version"
+
+    // metastore utils (in case hive metastore needs to be created)
+    implementation (project(":hive:metastoreutils"))
 
     // to run the pipeline with DirectRunner or DataflowRunner
     runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.57.0'
