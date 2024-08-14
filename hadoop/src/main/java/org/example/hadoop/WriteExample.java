@@ -51,7 +51,7 @@ public class WriteExample {
                         GenerateSequence.from(0).to(10))
                 .apply("Convert longs to Beam Rows", MapElements.via(ROW_FUNC))
                 .setRowSchema(SCHEMA)
-                .apply("Write to Iceberg", Managed.write(Managed.ICEBERG).withConfig(ImmutableMap.<String, Object>builder()
+                .apply("Write to Iceberg (Hadoop)", Managed.write(Managed.ICEBERG).withConfig(ImmutableMap.<String, Object>builder()
                         .put("table", options.getTable())
                         .put("catalog_name", options.getCatalogName())
                         .put("catalog_properties", ImmutableMap.<String, Object>builder()

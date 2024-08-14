@@ -24,7 +24,6 @@ dependencies {
 
     // runtime dependencies when writing to GCS
     runtimeOnly "org.yaml:snakeyaml:2.0"
-    runtimeOnly "com.google.cloud.bigdataoss:gcsio:2.2.16"
     runtimeOnly "com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16"
     runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
 

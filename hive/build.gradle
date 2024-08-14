@@ -1,9 +1,10 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id "com.github.johnrengelman.shadow" version "8.1.0"
 }
 
-group = 'org.example.hadoop'
+group = 'org.example.hive'
 version = '1.0-SNAPSHOT'
 
 repositories {
@@ -16,6 +17,9 @@ repositories {
     }
 }
 
+def iceberg_version = "1.4.2"
+def hive_version = "3.1.3"
+
 dependencies {
     // Apache Beam's IcebergIO
     implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.59.0-SNAPSHOT"
@@ -23,10 +27,19 @@ dependencies {
 
     // runtime dependencies when writing to GCS
     runtimeOnly "org.yaml:snakeyaml:2.0"
-    runtimeOnly "com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16"
+    runtimeOnly ("com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16")
     runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
 
-    // to run the pipeline with DirectRunner
+    // hive dependencies to create a metastore (if needed)
+    implementation "org.apache.iceberg:iceberg-common:$iceberg_version"
+    implementation ("org.apache.iceberg:iceberg-hive-metastore:$iceberg_version")
+    runtimeOnly ("org.apache.hive.hcatalog:hive-hcatalog-core:$hive_version") {
+        exclude group: "org.apache.hive", module: "hive-exec"
+        exclude group: "org.apache.parquet", module: "parquet-hadoop-bundle"
+    }
+    implementation project(path: ":hive:exec", configuration: "shadow")
+
+    // to run the pipeline with DirectRunner or DataflowRunner
     runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.57.0'
     implementation 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.57.0'
 }

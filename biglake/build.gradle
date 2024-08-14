@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     // Apache Beam's IcebergIO
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.58.0-SNAPSHOT"
+    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.59.0-SNAPSHOT"
     implementation project(":utils")
 
     // runtime dependencies when writing to GCS

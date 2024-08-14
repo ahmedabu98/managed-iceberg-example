@@ -9,6 +9,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/biglake" />
+            <option value="$PROJECT_DIR$/bigquery" />
+            <option value="$PROJECT_DIR$/hadoop" />
+            <option value="$PROJECT_DIR$/hive" />
+            <option value="$PROJECT_DIR$/utils" />
           </set>
         </option>
       </GradleProjectSettings>

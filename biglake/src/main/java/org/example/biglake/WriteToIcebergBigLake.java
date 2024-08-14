@@ -62,7 +62,7 @@ public class WriteToIcebergBigLake {
                         GenerateSequence.from(0).to(100L))
                 .apply("Convert longs to Beam Rows", MapElements.via(ROW_FUNC))
                 .setRowSchema(SCHEMA)
-                .apply("Write to Iceberg BigLake", Managed.write(Managed.ICEBERG).withConfig(ImmutableMap.<String, Object>builder()
+                .apply("Write to Iceberg (Biglake)", Managed.write(Managed.ICEBERG).withConfig(ImmutableMap.<String, Object>builder()
                         .put("table", options.getTable())
                         .put("catalog_name", options.getCatalogName())
                         .put("catalog_properties", properties)

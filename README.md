@@ -9,6 +9,7 @@ files. To run these examples, clone this repository and follow the instructions 
 
 **Note**: DirectRunner is used by default. Feel free to tag on `--runner=DataflowRunner` to run on Dataflow.
 
+- [HiveCatalog](https://github.com/ahmedabu98/managed-iceberg-example/tree/master/hive)
 - [HadoopCatalog](https://github.com/ahmedabu98/managed-iceberg-example/tree/master/hadoop)
 - [BigLakeCatalog](https://github.com/ahmedabu98/managed-iceberg-example/tree/master/biglake)
 - [BigQueryMetastoreCatalog](https://github.com/ahmedabu98/managed-iceberg-example/tree/master/bigquery)
