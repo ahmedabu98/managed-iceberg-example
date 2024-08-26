@@ -1,7 +1,6 @@
 package org.example.hive;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.GenerateSequence;
 import org.apache.beam.sdk.managed.Managed;
@@ -22,7 +21,6 @@ public class WriteExample {
         // If required, create it manually here
         if (options.getCreateTable()) {
             hiveMetastore.createTable(options.getCatalogName(), options.getTable());
-//            createTable(hiveMetastore, options);
         }
 
         Pipeline pipeline = Pipeline.create(options);
