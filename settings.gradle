@@ -8,4 +8,6 @@ include 'hive:metastoreutils'
 findProject(':hive:metastoreutils')?.name = 'metastoreutils'
 include 'hive:metastore'
 findProject(':hive:metastore')?.name = 'metastore'
+include 'bigquery:bqms'
+findProject(':bigquery:bqms')?.name = 'bqms'
 

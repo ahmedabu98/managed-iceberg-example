@@ -48,7 +48,7 @@ public class WriteExample {
 
         pipeline
                 .apply("Generate some longs",
-                        GenerateSequence.from(0).to(10))
+                        GenerateSequence.from(0).to(100))
                 .apply("Convert longs to Beam Rows", MapElements.via(ROW_FUNC))
                 .setRowSchema(SCHEMA)
                 .apply("Write to Iceberg (Hadoop)", Managed.write(Managed.ICEBERG).withConfig(ImmutableMap.<String, Object>builder()

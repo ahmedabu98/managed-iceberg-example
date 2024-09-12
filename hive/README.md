@@ -8,7 +8,7 @@ up a local metastore for you. The actual data is written to a directory specifie
 
 **Note:** after the pipeline finishes running, the metastore will be shut down, so you will
 end up losing the stored metadata. If you'd like to keep the metastore open for some time while you
-do further experimenting (e.g. reading from the metastore), you can pass in a value for `--stallSeconds`.
+do further experimenting (e.g. reading from the metastore), you can optionally pass in a value for `--stallSeconds`.
 A value of `-1` will make it stall indefinitely. 
 
 You can find the URI for the created metastore in the logs. 

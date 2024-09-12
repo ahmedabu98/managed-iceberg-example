@@ -11,24 +11,21 @@ repositories {
     maven {
         url = uri("https://packages.confluent.io/maven/")
     }
-    maven {
-        url = uri('https://repository.apache.org/content/repositories/snapshots/')
-    }
 }
 
 dependencies {
     // Apache Beam's IcebergIO
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.59.0-SNAPSHOT"
+    implementation "org.apache.beam:beam-sdks-java-core:2.59.0"
+    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.59.0"
     implementation project(":utils")
 
     // runtime dependencies when writing to GCS
-    runtimeOnly "org.yaml:snakeyaml:2.0"
     runtimeOnly "com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16"
     runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
 
     // to run the pipeline with DirectRunner
-    runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.57.0'
-    implementation 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.57.0'
+    runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.59.0'
+    implementation 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.59.0'
 }
 
 tasks.create(name:"execute", type:JavaExec) {

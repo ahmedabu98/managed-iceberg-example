@@ -55,7 +55,6 @@ public class WriteExample {
                 .put("gcp_project", options.getProject())
                 .put("gcp_location", options.getRegion())
                 .put("warehouse", options.getWarehouse())
-                .put("allow_external_catalog_options_for_iceberg", "true")
                 .put("catalog-impl", "org.apache.iceberg.gcp.bigquery.BigQueryMetastoreCatalog")
                 .build();
 
