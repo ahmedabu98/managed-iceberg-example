@@ -24,7 +24,9 @@ dependencies {
     // Apache Beam's IcebergIO
     implementation project(":utils")
     runtimeOnly ("com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16")
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.59.0-SNAPSHOT"
+    implementation "org.apache.beam:beam-sdks-java-core:2.60.0"
+    implementation "org.apache.beam:beam-sdks-java-managed:2.60.0"
+    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.60.0"
     runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
 
     // hive dependencies to create a metastore (if needed)
