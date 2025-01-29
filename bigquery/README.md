@@ -14,4 +14,4 @@
     --warehouse=$WAREHOUSE --project=$PROJECT --region=$REGION"
 ```
 **Note**: BigQueryMetastoreCatalog is a custom catalog provided by Google. The jar is included here for convenience,
-but it can be downloaded from this GCS bucket: `gs://spark-lib/biglake/iceberg-bigquery-catalog-iceberg1.5.2-0.1.0-with-dependencies.jar`
+but it can be downloaded from this GCS bucket: `gs://spark-lib/bigquery/iceberg-bigquery-catalog-1.5.2-0.1.0.jar`

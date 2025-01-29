@@ -18,7 +18,8 @@ repositories {
 
 dependencies {
     // Apache Beam's IcebergIO
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.60.0"
+    implementation "org.apache.beam:beam-sdks-java-io-iceberg:$project.sdk_version"
+    implementation "org.apache.beam:beam-sdks-java-managed:$project.sdk_version"
     implementation project(":utils")
 
     // runtime dependencies when writing to GCS
@@ -33,8 +34,8 @@ dependencies {
     runtimeOnly "org.apache.hive:hive-common:3.1.3"
 
     // to run the pipeline with direct runner
-    runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.60.0'
-    implementation 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.60.0'
+    runtimeOnly "org.apache.beam:beam-runners-direct-java:$project.sdk_version"
+    implementation "org.apache.beam:beam-runners-google-cloud-dataflow-java:$project.sdk_version"
 }
 
 tasks.create(name:"execute", type:JavaExec) {

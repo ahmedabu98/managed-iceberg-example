@@ -13,6 +13,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.60.0'
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.60.0"
+    implementation "org.apache.beam:beam-runners-google-cloud-dataflow-java:$project.sdk_version"
+    implementation "org.apache.beam:beam-sdks-java-io-iceberg:$project.sdk_version"
 }
