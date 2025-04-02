@@ -22,6 +22,7 @@ dependencies {
     implementation "org.apache.beam:beam-sdks-java-core:2.60.0"
     implementation "org.apache.beam:beam-sdks-java-managed:2.60.0"
     implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.60.0"
+    implementation "org.apache.beam:beam-sdks-java-io-expansion-service:$project.sdk_version" // contains hive exec
     implementation project(":utils")
 
     // runtime dependencies when writing to GCS

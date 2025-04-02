@@ -16,7 +16,7 @@ You can find the URI for the created metastore in the logs.
 ```bash
 ./gradlew hive:execute -PmainClass=org.example.hive.WriteExample \
     -Pexec.args="--catalogName=$CATALOG_NAME --table=$TABLE --warehouse=$WAREHOUSE
-    --createTable=true --project=$PROJECT --region=$REGION --metastoreUri=$METASTORE_URI
+    --project=$PROJECT --region=$REGION --metastoreUri=$METASTORE_URI
     --stallSeconds=$STALL_SECONDS"
 ```
 ### _Read_

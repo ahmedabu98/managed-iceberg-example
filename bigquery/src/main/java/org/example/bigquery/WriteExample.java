@@ -10,13 +10,7 @@ import org.apache.beam.sdk.schemas.Schema;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.apache.beam.sdk.values.Row;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.iceberg.catalog.TableIdentifier;
-import org.apache.iceberg.gcp.bigquery.BigQueryMetastoreCatalog;
 import org.example.utils.IcebergPipelineOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,8 +18,6 @@ import java.util.stream.LongStream;
 
 
 public class WriteExample {
-    private static final Logger LOG = LoggerFactory.getLogger(WriteExample.class);
-
     // change `SCHEMA` and `ROW_FUNC` to fit your existing Iceberg table's schema
     private static final Schema SCHEMA =
             Schema.builder()
@@ -58,10 +50,6 @@ public class WriteExample {
                 .put("catalog-impl", "org.apache.iceberg.gcp.bigquery.BigQueryMetastoreCatalog")
                 .build();
 
-        if (options.getCreateTable()) {
-            createTable(options, properties);
-        }
-
         Pipeline pipeline = Pipeline.create(options);
 
         pipeline
@@ -76,22 +64,5 @@ public class WriteExample {
                         .build()));
 
         pipeline.run();
-    }
-
-    public static void createTable(IcebergPipelineOptions options, Map<String, String> properties) {
-        Configuration catalogConf = new Configuration();
-        catalogConf.set("fs.gs.project.id", Preconditions.checkNotNull(options.getProject(),
-                "To create the table, please provide your GCP project using --project"));
-        catalogConf.set("fs.gs.auth.type", "APPLICATION_DEFAULT");
-
-        BigQueryMetastoreCatalog catalog = new BigQueryMetastoreCatalog();
-
-        catalog.setConf(catalogConf);
-        catalog.initialize(options.getCatalogName(), properties);
-
-        TableIdentifier table = TableIdentifier.parse(options.getTable());
-
-        catalog.createTable(table, IcebergUtils.beamSchemaToIcebergSchema(SCHEMA));
-        LOG.info("Successfully created table {}", table);
     }
 }

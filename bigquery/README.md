@@ -5,7 +5,7 @@
 ```bash
 ./gradlew bigquery:execute -PmainClass=org.example.bigquery.WriteExample \
     -Pexec.args="--catalogName=$CATALOG_NAME --table=$TABLE --warehouse=$WAREHOUSE
-    --createTable=true --project=$PROJECT --region=$REGION"
+    --project=$PROJECT --region=$REGION"
 ```
 ### _Read_
 ```bash

@@ -17,12 +17,6 @@ public class WriteExample {
         IcebergPipelineOptions options = PipelineOptionsFactory.fromArgs(args).as(IcebergPipelineOptions.class);
         HiveMetastore hiveMetastore = new HiveMetastore(options.getWarehouse(), options.getMetastoreUri());
 
-        // Currently, IcebergIO connector doesn't support automatically creating the table
-        // If required, create it manually here
-        if (options.getCreateTable()) {
-            hiveMetastore.createTable(options.getCatalogName(), options.getTable());
-        }
-
         Pipeline pipeline = Pipeline.create(options);
 
         pipeline

@@ -4,7 +4,7 @@
 ```bash
 ./gradlew hadoop:execute -PmainClass=org.example.hadoop.WriteExample \
     -Pexec.args="--catalogName=$CATALOG_NAME --table=$TABLE --warehouse=$WAREHOUSE 
-    --createTable=true --project=$PROJECT"
+    --project=$PROJECT"
 ```
 ### _Read_
 ```bash

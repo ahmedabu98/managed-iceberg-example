@@ -18,14 +18,13 @@ dependencies {
     implementation "org.apache.beam:beam-sdks-java-core:$project.sdk_version"
     implementation "org.apache.beam:beam-sdks-java-managed:$project.sdk_version"
     implementation "org.apache.beam:beam-sdks-java-io-iceberg:$project.sdk_version"
+    implementation "org.apache.beam:beam-sdks-java-io-expansion-service:$project.sdk_version" // contains bqms
+
     implementation project(":utils")
 
     // runtime dependencies when writing to GCS
     runtimeOnly "com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.2.16"
     runtimeOnly "org.apache.hadoop:hadoop-client:2.10.2"
-
-    // Shaded BigQueryMetastore catalog jar with some problematic packages relocated
-    implementation project(path:":bigquery:bqms", configuration:"shadow")
 
     // to run the pipeline with direct runner
     runtimeOnly "org.apache.beam:beam-runners-direct-java:$project.sdk_version"

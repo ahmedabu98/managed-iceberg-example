@@ -9,14 +9,7 @@ import org.apache.beam.sdk.schemas.Schema;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.apache.beam.sdk.values.Row;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.iceberg.catalog.TableIdentifier;
-import org.apache.iceberg.hadoop.HadoopCatalog;
-import org.apache.iceberg.types.Types;
 import org.example.utils.IcebergPipelineOptions;
-
-import java.util.Map;
 
 
 public class WriteExample {
@@ -38,12 +31,6 @@ public class WriteExample {
     public static void main(String[] args) {
         IcebergPipelineOptions options = PipelineOptionsFactory.fromArgs(args).as(IcebergPipelineOptions.class);
 
-        // Currently, IcebergIO connector doesn't support automatically creating the table
-        // If required, create it manually here
-        if (options.getCreateTable()) {
-            createTable(options);
-        }
-
         Pipeline pipeline = Pipeline.create(options);
 
         pipeline
@@ -61,26 +48,5 @@ public class WriteExample {
                         .build()));
 
         pipeline.run();
-    }
-
-    public static void createTable(IcebergPipelineOptions options) {
-        Configuration catalogConf = new Configuration();
-        catalogConf.set("fs.gs.project.id", Preconditions.checkNotNull(options.getProject(),
-                "To create the table, please provide your GCP project using --project"));
-        catalogConf.set(
-                "fs.gs.auth.service.account.json.keyfile", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
-        Map<String, String> properties = ImmutableMap.<String, String>builder()
-                .put("warehouse", options.getWarehouse())
-                .build();
-
-        HadoopCatalog catalog;
-        catalog = new HadoopCatalog();
-        catalog.setConf(catalogConf);
-        catalog.initialize(options.getCatalogName(), properties);
-
-        catalog.createTable(TableIdentifier.parse(options.getTable()),
-                new org.apache.iceberg.Schema(
-                        Types.NestedField.required(1, "str", Types.StringType.get()),
-                        Types.NestedField.required(2, "number", Types.LongType.get())));
     }
 }
