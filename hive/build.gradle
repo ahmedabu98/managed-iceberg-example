@@ -15,13 +15,11 @@ repositories {
 }
 
 def iceberg_version = "1.4.2"
-def hive_version = "3.1.3"
 
 dependencies {
     // Apache Beam's IcebergIO
-    implementation "org.apache.beam:beam-sdks-java-core:2.60.0"
-    implementation "org.apache.beam:beam-sdks-java-managed:2.60.0"
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:2.60.0"
+    implementation "org.apache.beam:beam-sdks-java-core:$project.sdk_version"
+    implementation "org.apache.beam:beam-sdks-java-managed:$project.sdk_version"
     implementation "org.apache.beam:beam-sdks-java-io-expansion-service:$project.sdk_version" // contains hive exec
     implementation project(":utils")
 
@@ -37,8 +35,8 @@ dependencies {
     implementation (project(":hive:metastoreutils"))
 
     // to run the pipeline with DirectRunner or DataflowRunner
-    runtimeOnly 'org.apache.beam:beam-runners-direct-java:2.60.0'
-    implementation 'org.apache.beam:beam-runners-google-cloud-dataflow-java:2.60.0'
+    runtimeOnly "org.apache.beam:beam-runners-direct-java:$project.sdk_version"
+    implementation "org.apache.beam:beam-runners-google-cloud-dataflow-java:$project.sdk_version"
 }
 
 tasks.create(name:"execute", type:JavaExec) {

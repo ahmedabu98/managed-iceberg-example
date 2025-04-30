@@ -17,7 +17,7 @@ dependencies {
     // Apache Beam's IcebergIO
     implementation "org.apache.beam:beam-sdks-java-core:$project.sdk_version"
     implementation "org.apache.beam:beam-sdks-java-managed:$project.sdk_version"
-    implementation "org.apache.beam:beam-sdks-java-io-iceberg:$project.sdk_version"
+    implementation "org.apache.beam:beam-sdks-java-io-expansion-service:$project.sdk_version"
     implementation project(":utils")
 
     // runtime dependencies when writing to GCS
